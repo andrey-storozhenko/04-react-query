@@ -31,7 +31,7 @@ export default function App() {
     setIsModalOpen(false);
   };
 
-  const { data, isLoading, isError } = useQuery(
+  const { data, isLoading, isSuccess ,isError } = useQuery(
   {
     queryKey: ['movie', query,page],
       queryFn: () => fetchMovies(query,page),
@@ -45,11 +45,12 @@ export default function App() {
     if (data?.results.length === 0) {
       toast('No movies found for your request.');
     }
-  }, [data?.results.length]);
+  }, [data?.results]);
 
   const handleForm = (title: string) => {
     console.log("Movie:", title);
-    setQuery(title);
+    setQuery(title);  
+    setPage(1);
   }
   return (
     <div className={css.app}>
@@ -70,7 +71,7 @@ export default function App() {
       
       {isLoading && <Loader />}
       {isError && <ErrorMessage />}
-      {data && data.results.length > 0 && <MovieGrid movies={data.results} onSelect={openModal} />}
+      {isSuccess && data.results.length > 0 && <MovieGrid movies={data.results} onSelect={openModal} />}
       
       {isModalOpen && <MovieModal movie={selectedMovie} onClose={closeModal} />}
       <Toaster />
